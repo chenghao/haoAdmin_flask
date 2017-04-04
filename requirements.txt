@@ -1,0 +1,9 @@
+gevent
+flask
+flask-login
+flask-session
+jinja2
+peewee
+pymysql
+webargs
+redis

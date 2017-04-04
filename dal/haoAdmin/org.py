@@ -1,7 +1,5 @@
 # coding:utf-8
 
-from models import HOrg, HUser
-from peewee import fn
 from dal.haoAdmin import query_original_sql
 
 
