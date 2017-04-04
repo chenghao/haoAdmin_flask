@@ -1,0 +1,26 @@
+<head>
+	<meta charset="utf-8">
+	<title>{% block title %}后台管理系统{% endblock %}</title>
+	<meta name="renderer" content="webkit">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="format-detection" content="telephone=no">
+
+	{% include 'haoAdmin/link_script.html' %}
+
+    <input type="hidden" id="url_prefix" value="{{url_for('static', filename='')}}"/>
+    <script>
+        function get_url_prefix() {
+            var prefix = $("#url_prefix").val();
+            if(prefix.length > 8){
+                var end = prefix.length - 7;
+                prefix = prefix.substr(0, end);
+            }
+            return prefix;
+        }
+
+        remoteUrl = get_url_prefix();
+    </script>
+</head>

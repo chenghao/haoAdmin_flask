@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+
+<html>
+	{% include 'haoAdmin/head.html' %}
+
+	<body class="beg-login-bg">
+		<div class="beg-login-box">
+			<header>
+				<h1>后台登录</h1>
+			</header>
+
+			<div class="beg-login-main">
+				<form action="#" class="layui-form" method="post" id="commonForm">
+					<div class="layui-form-item">
+						<label class="beg-login-icon"><i class="layui-icon">&#xe612;</i></label>
+						<input type="text" name="login_name" lay-verify="required" autocomplete="off" placeholder="这里输入登录名" class="layui-input">
+					</div>
+					<div class="layui-form-item">
+						<label class="beg-login-icon"><i class="layui-icon">&#xe642;</i></label>
+						<input type="password" name="login_pwd" lay-verify="required" autocomplete="off" placeholder="这里输入密码" class="layui-input">
+					</div>
+
+					<div class="layui-form-item">
+						<div class="beg-pull-left beg-login-remember">
+							<label>记住帐号？</label>
+							<input type="checkbox" name="rememberMe" value="true" lay-skin="switch" checked title="记住帐号">
+						</div>
+
+						<div class="beg-pull-right">
+							<button class="layui-btn layui-btn-primary" lay-submit lay-filter="login">
+                            <i class="layui-icon">&#xe650;</i> 登录
+                        </button>
+						</div>
+						<div class="beg-clear"></div>
+					</div>
+				</form>
+			</div>
+			<footer>
+				<p>ChengHao © <a href="https://github.com/chenghao" target="_blank">github.com/chenghao</a></p>
+			</footer>
+		</div>
+
+		<script>
+			layui.use(['layer', 'form'], function() {
+				var layer = layui.layer,
+					$ = layui.jquery,
+					form = layui.form();
+
+				form.on('submit(login)',function(data){
+					//console.log(data.form) //被执行提交的form对象，一般在存在form标签时才会返回
+  					//console.log(data.field) //当前容器的全部表单字段，名值对形式：{name: value}
+
+					$("#commonForm").ajaxForm({
+						//resetForm: true,
+						dataType: "json",
+						url: getPrefixPath("auth/login"),
+						beforeSubmit: function () {
+							layer.load();
+						},
+						success: function (d) {
+							layer.closeAll('loading');
+							if(d.code == 0){
+                                //store.set("menus", d.menus);
+
+								customHref("")
+							}else{
+								layer.msg(d.msg, error_layer_option)
+							}
+						},
+						error: function(aa){
+							layer.closeAll('loading');
+							layer.msg("系统异常", error_layer_option)
+						}
+					});
+				});
+			});
+		</script>
+	</body>
+
+</html>

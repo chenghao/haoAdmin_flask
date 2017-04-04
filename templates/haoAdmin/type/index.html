@@ -1,0 +1,164 @@
+
+{% include 'haoAdmin/head.html' %}
+
+<body>
+	<div class="admin-main">
+
+		<blockquote class="layui-elem-quote">
+			<div class="layui-input-inline" style="width: 400px;">
+			  	<input type="text" id="keyword" class="layui-input" style="width: 80%; float: left;" placeholder="根据字典名称/字典code搜索">
+				<button class="layui-btn" style="float: right;" id="search">搜索</button>
+			</div>
+		</blockquote>
+
+		<fieldset class="layui-elem-field" style="width: 55%; float: left">
+			<legend>字典分类列表</legend>
+            <a href="javascript:;" class="layui-btn layui-btn-small" id="add" style="margin-left: 15px;">
+				<i class="layui-icon">&#xe608;</i> 字典分类录入
+			</a>
+			<div class="layui-field-box">
+				<table class="site-table table-hover">
+					<thead>
+						<tr>
+							<th>字典名称</th>
+							<th>字典code</th>
+							<th>操作</th>
+						</tr>
+					</thead>
+
+					<tbody id="tbodys">
+
+					</tbody>
+
+					<script type="text/html" id="body_tpl">
+						{% raw %}
+							{{# layui.each(d, function(index, item){ }}
+								<tr>
+									<td>{{ item.group_name }}</td>
+									<td>{{ item.group_value }}</td>
+									<td>
+										<a href="javascript:;" class="layui-btn layui-btn-mini">编辑</a>
+										<a href="javascript:;" class="layui-btn layui-btn-danger layui-btn-mini">删除</a>
+										<a href="javascript:;" v="{{ item.pid }}"
+                                           class="layui-btn layui-btn-normal layui-btn-mini getType">查看类型</a>
+									</td>
+								</tr>
+							{{# }) }}
+						{% endraw %}
+					</script>
+
+				</table>
+			</div>
+		</fieldset>
+
+		<fieldset class="layui-elem-field" style="width: 40%; float: right">
+			<legend><span id="groupName"></span>数据列表</legend>
+            <a href="javascript:;" class="layui-btn layui-btn-small" id="add" style="margin-left: 15px;">
+				<i class="layui-icon">&#xe608;</i> 字典数据录入
+			</a>
+			<div class="layui-field-box">
+				<table class="site-table table-hover">
+					<thead>
+						<tr>
+							<th>类型名称</th>
+							<th>类型编码</th>
+							<th>操作</th>
+						</tr>
+					</thead>
+
+					<tbody id="tbodys2">
+
+					</tbody>
+
+					<script type="text/html" id="body_tpl2">
+						{% raw %}
+							{{# layui.each(d, function(index, item){ }}
+								<tr>
+									<td>{{ item.type_name }}</td>
+									<td>{{ item.type_value }}</td>
+									<td>
+										<a href="javascript:;" class="layui-btn layui-btn-mini">编辑</a>
+										<a href="javascript:;" class="layui-btn layui-btn-danger layui-btn-mini">删除</a>
+									</td>
+								</tr>
+							{{# }) }}
+						{% endraw %}
+					</script>
+
+				</table>
+			</div>
+		</fieldset>
+
+		<div class="admin-table-page">
+			<div id="page" class="page"></div>
+		</div>
+	</div>
+
+
+	<script>
+        var _keyword = "";
+
+        layui.use(['jquery', 'laytpl', 'laypage'], function() {
+            var $ = layui.jquery,
+                laytpl = layui.laytpl,
+                laypage = layui.laypage;
+
+            $(function(){
+                init_data(1);
+            });
+
+            function init_data(page_no, keyword){
+                ajaxReq("type/get_typegroup", function(data){
+                    var tpl = document.getElementById('body_tpl').innerHTML; //读取模版
+                    //方式一：异步渲染（推荐）
+                    laytpl(tpl).render(data.groups, function(render){
+                      document.getElementById('tbodys').innerHTML = render;
+                    });
+
+                    get_type();
+                    _search();
+
+                    buildPage(data.page_no, data.total_page);
+                }, {page_no: page_no, keyword: keyword});
+            }
+
+            function buildPage(page_no, total_page){
+                laypage({
+                    cont: 'page',
+                    pages: total_page, //总页数
+                    groups: 5, //连续显示分页数
+                    curr: page_no, //当前页数
+                    jump: function(obj, first) {
+                        if(!first) {
+                            init_data(obj.curr, _keyword);
+                        }
+                    }
+                });
+            }
+
+            function get_type() {
+                $(".getType").click(function () {
+                    var group_id = $(this).attr("v");
+                    var groupName = $(this).parent("td").siblings("td").eq(0).html();
+                    $("#groupName").html("［" + groupName + "］");
+                    ajaxReq("type/get_type", function(data){
+                        var tpl = document.getElementById('body_tpl2').innerHTML; //读取模版
+                        //方式一：异步渲染（推荐）
+                        laytpl(tpl).render(data.types, function(render){
+                          document.getElementById('tbodys2').innerHTML = render;
+                        });
+                    }, {group_id: group_id});
+                });
+            }
+
+            function _search(){
+                $("#search").click(function () {
+                    var keyword = $("#keyword").val();
+                    _keyword = keyword;
+                    init_data(1, keyword);
+                });
+            }
+        });
+
+	</script>
+</body>
