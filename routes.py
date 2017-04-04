@@ -1,6 +1,6 @@
 # coding:utf-8
 
-from flask import Flask, request, redirect
+from flask import Flask, request, redirect, session
 from flask.ext.login import LoginManager, current_user
 from flask_session import Session
 from models import HUser
@@ -14,15 +14,6 @@ from redis import Redis
 __author__ = "chenghao"
 app = Flask(__name__, static_url_path=URL_PREFIX + '/static')
 
-# 设置redis为session存储
-SESSION_TYPE = 'redis'
-SESSION_USE_SIGNER = True
-SESSION_KEY_PREFIX = conf.session_redis_prefix
-SESSION_REDIS = Redis(host=conf.redis_host, port=conf.redis_port, db=conf.session_redis_db,
-                      password=conf.redis_password)
-app.config.from_object(__name__)
-Session(app)
-
 # flask-login
 app.secret_key = 'haoAdmin_secret'
 app.permanent_session_lifetime = timedelta(minutes=30)
@@ -31,6 +22,15 @@ login_manager.session_protection = 'strong'
 login_manager.remember_cookie_duration = timedelta(minutes=30)
 login_manager.login_view = 'auth.login'
 login_manager.init_app(app)
+
+# 设置redis为session存储
+SESSION_TYPE = 'redis'
+SESSION_USE_SIGNER = True
+SESSION_KEY_PREFIX = conf.session_redis_prefix
+SESSION_REDIS = Redis(host=conf.redis_host, port=conf.redis_port, db=conf.session_redis_db,
+                      password=conf.redis_password)
+app.config.from_object(__name__)
+Session(app)
 
 
 @login_manager.user_loader

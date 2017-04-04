@@ -51,7 +51,6 @@ def login():
 def logout():
     try:
         user_id = current_user.get_id()
-
         logout_user()
 
         # 清空当前用户相关的session

@@ -52,3 +52,19 @@ function _confirm(msg, callback1, callback2){
         }
     });
 }
+
+function buildPage(laypage, page_no, total_page, callback){
+    laypage({
+        cont: 'page',
+        pages: total_page, //总页数
+        groups: 5, //连续显示分页数
+        curr: page_no, //当前页数
+        jump: function(obj, first) {
+            if(!first) {
+                if(callback){
+                    callback(obj.curr);
+                }
+            }
+        }
+    });
+}

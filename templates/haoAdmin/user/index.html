@@ -5,22 +5,27 @@
 	<div class="admin-main">
 
 		<blockquote class="layui-elem-quote">
-
+            <div class="layui-input-inline" style="width: 400px;">
+			  	<input type="text" id="keyword" class="layui-input" style="width: 80%; float: left;" placeholder="登录名/真实名/手机号">
+				<button class="layui-btn" style="float: right;" id="search">搜索</button>
+			</div>
 		</blockquote>
 
 		<fieldset class="layui-elem-field" style="width: 45%; float: left">
-			<legend>主菜单列表</legend>
+			<legend>用户列表</legend>
             <a href="javascript:;" class="layui-btn layui-btn-small" id="add" style="margin-left: 15px;">
-				<i class="layui-icon">&#xe608;</i> 添加菜单
+				<i class="layui-icon">&#xe608;</i> 添加用户
 			</a>
 
 			<div class="layui-field-box" style="overflow-x: auto;">
 				<table class="site-table table-hover">
 					<thead>
 						<tr>
-							<th>菜单名称</th>
-							<th>归属机构</th>
-							<th>归属角色</th>
+							<th>登录名</th>
+							<th>真实名</th>
+							<th>手机号</th>
+							<th>性别</th>
+							<th>创建日期</th>
 							<th>操作</th>
 						</tr>
 					</thead>
@@ -29,18 +34,22 @@
 
 					</tbody>
 
-					<script type="text/html" id="menu_tpl">
+					<script type="text/html" id="user_tpl">
 						{% raw %}
-							{{# layui.each(d.menus, function(index, item){ }}
+							{{# layui.each(d.users, function(index, item){ }}
 								<tr>
-                                    <td>{{ item.menu_name }}</td>
-									<td>{{ item.org_name }}</td>
-									<td>{{ item.role_name }}</td>
+                                    <td>{{ item.login_name }}</td>
+									<td>{{ item.user_name }}</td>
+									<td>{{ item.phone }}</td>
+									<td>{{ item.sex }}</td>
+									<td>{{ item.create_time }}</td>
 									<td>
-										<a href="javascript:;" v="{{ item.pid }}"
-                                           class="layui-btn layui-btn-normal layui-btn-mini getSiblingMenu">子菜单</a>
 										<a href="javascript:;" class="layui-btn layui-btn-mini">编辑</a>
 										<a href="javascript:;" class="layui-btn layui-btn-danger layui-btn-mini">删除</a>
+                                        <a href="javascript:;" v="{{ item.pid }}"
+                                           class="layui-btn layui-btn-normal layui-btn-mini getUserOrg">机构</a>
+                                        <a href="javascript:;" v="{{ item.pid }}"
+                                           class="layui-btn layui-btn-normal layui-btn-mini getUserrole">角色</a>
 									</td>
 								</tr>
 							{{# }) }}
@@ -104,28 +113,37 @@
 
 
 	<script>
-        layui.use(['jquery', 'laytpl'], function() {
+        var _keyword = "";
+        layui.use(['jquery', 'laytpl', 'laypage'], function() {
             var $ = layui.jquery,
+                laypage = layui.laypage,
                 laytpl = layui.laytpl;
 
             $(function(){
-                init_data();
+                init_data(1);
             });
 
-            function init_data(){
-                ajaxReq("menu/get_parent_menu", function(data){
-                    var tpl = document.getElementById('menu_tpl').innerHTML; //读取模版
+            function init_data(page, keyword){
+                ajaxReq("user/get_users", function(data){
+                    var tpl = document.getElementById('user_tpl').innerHTML; //读取模版
                     laytpl(tpl).render(data, function(render){
                       document.getElementById('tbodys').innerHTML = render;
                     });
 
-                    getSiblingMenu();
-                });
+                    _search();
+
+                    //getUserOrg();
+                    //getUserRole();
+
+                    buildPage(laypage, data.page_no, data.total_page, function (page_no) {
+                        init_data(page_no, keyword);
+                    });
+                }, {page_no: page, keyword: keyword});
             }
 
-            function getSiblingMenu() {
-                $(".getSiblingMenu").click(function () {
-                    var menu_id = $(this).attr("v");
+            function getUserOrg() {
+                $(".getUserOrg").click(function () {
+                    var user_id = $(this).attr("v");
                     var menuName = $(this).parent("td").siblings("td").eq(0).html();
                     $("#parentMenuName").html("［" + menuName + "］");
 
@@ -137,6 +155,14 @@
                         });
                     }, {menu_id: menu_id, is_children: "1"});
                 })
+            }
+
+            function _search(){
+                $("#search").click(function () {
+                    var keyword = $("#keyword").val();
+                    _keyword = keyword;
+                    init_data(1, keyword);
+                });
             }
         });
 
