@@ -44,7 +44,7 @@ def login():
                 return jsonify(code=0)
         except DoesNotExist as e:
             log.error(e.message, exc_info=True)
-            return jsonify(code=-1, msg="用户名或密码错误")
+            return jsonify(code=-1, msg="用户名或密码错误", ensure_ascii=False)
 
 
 @auth.route('/logout', methods=['POST'])
@@ -64,4 +64,4 @@ def logout():
         return jsonify(code=0)
     except Exception as e:
         log.error(e.message, exc_info=True)
-        return jsonify(code=-1, msg="退出失败")
+        return jsonify(code=-1, msg="退出失败", ensure_ascii=False)

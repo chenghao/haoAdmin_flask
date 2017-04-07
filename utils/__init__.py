@@ -139,7 +139,7 @@ def jsonify(*args, **kwargs):
     else:
         data = args or kwargs
 
-    ensure_ascii = False
+    ensure_ascii = True
     if kwargs.has_key("ensure_ascii"):
         ensure_ascii = kwargs.pop("ensure_ascii")
 
