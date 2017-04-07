@@ -25,6 +25,5 @@ layui.define(['layer'], function(exports) {
 			return;
 		}
 	};
-
 	exports('common', common);
 });
