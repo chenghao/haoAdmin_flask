@@ -1,10 +1,10 @@
 # coding:utf-8
 
-from flask import Blueprint, request, jsonify
-
+from flask import request
 import utils
 from dal.haoAdmin import type as dal_type
-from utils import templated
+from utils import templated, jsonify
+from utils.route import FlaskBlueprint as Blueprint
 
 type = Blueprint('type', __name__)
 
@@ -29,9 +29,7 @@ def get_typegroup():
     groups = results[0]
     groups_count = results[1]
 
-    return jsonify(
-        groups=groups, page_no=page_no, total_page=utils.total_page(groups_count)
-    )
+    return jsonify(groups=groups, page_no=page_no, total_page=utils.total_page(groups_count))
 
 
 @type.route("/get_type")

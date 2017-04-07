@@ -1,9 +1,10 @@
 # coding:utf-8
 
-from flask import Blueprint, request, jsonify
+from flask import request
 from flask.ext.login import current_user
-from utils import templated, cached
+from utils import templated, cached, jsonify
 from dal import haoAdmin
+from utils.route import FlaskBlueprint as Blueprint
 
 __author__ = "chenghao"
 

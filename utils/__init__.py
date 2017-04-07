@@ -4,7 +4,8 @@ import hashlib, base64, re, uuid, json
 from datetime import datetime, date
 import conf
 from functools import wraps
-from flask import request, render_template
+from flask import request, render_template, current_app
+from flask.json import dumps
 from flask.ext.login import current_user
 from utils import singletons
 
@@ -108,6 +109,46 @@ def total_page(total_rows, rows=conf.ROWS):
     return int((total_rows - 1) / rows + 1)
 
 
+###################################################################################################
+def dict_cursor(cursor):
+    column_names = [d[0] for d in cursor.description]
+    return [_Row(zip(column_names, row)) for row in cursor]
+
+
+class _Row(dict):
+    def __getattr__(self, name):
+        try:
+            return self[name]
+        except KeyError:
+            raise AttributeError(name)
+
+
+###################################################################################################
+def jsonify(*args, **kwargs):
+    indent = None
+    separators = (',', ':')
+
+    if current_app.config['JSONIFY_PRETTYPRINT_REGULAR'] and not request.is_xhr:
+        indent = 2
+        separators = (', ', ': ')
+
+    if args and kwargs:
+        raise TypeError('jsonify() behavior undefined when passed both args and kwargs')
+    elif len(args) == 1:  # single args are passed directly to dumps()
+        data = args[0]
+    else:
+        data = args or kwargs
+
+    ensure_ascii = False
+    if kwargs.has_key("ensure_ascii"):
+        ensure_ascii = kwargs.pop("ensure_ascii")
+
+    return current_app.response_class(
+        (dumps(data, indent=indent, separators=separators, ensure_ascii=ensure_ascii), '\n'),
+        mimetype=current_app.config['JSONIFY_MIMETYPE']
+    )
+
+
 def templated(template=None):
     """
     模版装饰器
@@ -124,13 +165,18 @@ def templated(template=None):
             else:
                 if ".html" not in template_name:
                     template_name += ".html"
-            ctx = f(*args, **kwargs)
-            ctx = {} if ctx is None else ctx
 
-            if isinstance(ctx, dict):
-                return render_template(template_name, **ctx)
-            else:
-                return render_template(template_name, result=ctx)
+            try:
+                ctx = f(*args, **kwargs)
+                ctx = {} if ctx is None else ctx
+                if isinstance(ctx, dict):
+                    return render_template(template_name, **ctx)
+                else:
+                    return render_template(template_name, result=ctx)
+            except BaseException as e:
+                log = singletons.Log()
+                log.error(e.message, exc_info=True)
+                return jsonify(code=-1, msg=u"操作失败，%s" % e.message, ensure_ascii=False)
 
         return decorated_function
 
@@ -161,19 +207,6 @@ def cached(timeout=5 * 60, key='view/%s'):
         return decorated_function
 
     return decorator
-
-
-def dict_cursor(cursor):
-    column_names = [d[0] for d in cursor.description]
-    return [_Row(zip(column_names, row)) for row in cursor]
-
-
-class _Row(dict):
-    def __getattr__(self, name):
-        try:
-            return self[name]
-        except KeyError:
-            raise AttributeError(name)
 
 
 if __name__ == "__main__":

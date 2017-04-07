@@ -1,9 +1,9 @@
 # coding:utf-8
-from flask import Blueprint, jsonify, request, session
+from flask import request, session
 from flask.ext.login import current_user
-
 from dal.haoAdmin import menu as dal_menu
-from utils import templated
+from utils import templated, jsonify
+from utils.route import FlaskBlueprint as Blueprint
 
 __author__ = "chenghao"
 

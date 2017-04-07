@@ -73,7 +73,6 @@ layui.config({
 	});
 
     //模拟点击内容管理
-	//$('.beg-layout-menu').find('a[data-module-id=5]').click();
 	$('#menus li').eq(0).children('a').click();
 
 

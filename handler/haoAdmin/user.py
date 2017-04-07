@@ -1,7 +1,8 @@
 # coding:utf-8
-from flask import Blueprint, request, jsonify, session
+from flask import request, session
 from flask.ext.login import current_user
-from utils import templated
+from utils import templated, jsonify
+from utils.route import FlaskBlueprint as Blueprint
 import utils
 from dal.haoAdmin import user as dal_user
 
@@ -34,6 +35,4 @@ def get_users():
     users = results[0]
     users_count = results[1]
 
-    return jsonify(
-        users=users, page_no=page_no, total_page=utils.total_page(users_count)
-    )
+    return jsonify(users=users, page_no=page_no, total_page=utils.total_page(users_count))

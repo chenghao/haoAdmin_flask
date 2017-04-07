@@ -111,7 +111,7 @@ layui.define(['element'], function(exports) {
 	};
 	Tab.prototype.on = function(events, callback) {
 
-	}
+	};
 
 	var tab = new Tab();
 	exports(mod_name, function(options) {

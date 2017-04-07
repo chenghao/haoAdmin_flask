@@ -1,7 +1,7 @@
 # coding:utf-8
 
-from flask import Blueprint
 from utils import templated
+from utils.route import FlaskBlueprint as Blueprint
 
 main = Blueprint('main', __name__)
 

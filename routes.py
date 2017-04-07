@@ -1,6 +1,6 @@
 # coding:utf-8
 
-from flask import Flask, request, redirect, session
+from flask import Flask, request, redirect
 from flask.ext.login import LoginManager, current_user
 from flask_session import Session
 from models import HUser

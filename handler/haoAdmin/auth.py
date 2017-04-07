@@ -1,14 +1,14 @@
 # coding:utf-8
-from flask import Blueprint, render_template, request, jsonify, session
+from flask import render_template, request, session
 from flask.ext.login import login_user, logout_user, current_user
 from peewee import DoesNotExist
-
-import conf
-import utils
+import conf, utils
 from dal.haoAdmin import org as org_dal
 from dal.haoAdmin import role as role_dal
 from models import HUser
 from utils.singletons import Cache
+from utils import jsonify
+from utils.route import FlaskBlueprint as Blueprint
 
 __author__ = "chenghao"
 
