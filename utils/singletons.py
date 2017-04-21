@@ -47,7 +47,7 @@ class Log(object):
 
 class SingletonCache(type):
     """
-    日志单例
+    缓存单例
     """
 
     def __init__(cls, name, bases, dict):
@@ -64,7 +64,7 @@ class SingletonCache(type):
 
 class Cache(object):
     """
-    获取log实例
+    获取缓存实例
     """
     __metaclass__ = SingletonCache
 

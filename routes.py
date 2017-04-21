@@ -26,6 +26,7 @@ login_manager.init_app(app)
 # 设置redis为session存储
 SESSION_TYPE = 'redis'
 SESSION_USE_SIGNER = True
+SESSION_PERMANENT = False
 SESSION_KEY_PREFIX = conf.session_redis_prefix
 SESSION_REDIS = Redis(host=conf.redis_host, port=conf.redis_port, db=conf.session_redis_db,
                       password=conf.redis_password)

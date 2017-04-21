@@ -14,8 +14,8 @@ class FlaskBlueprint(Blueprint):
                 self.add_url_rule(rule, endpoint, f, **options)
                 return f
             except Exception as e:
-                log.error(e.message, exc_info=True)
-                return utils.jsonify(code=-1, msg=u"操作失败，%s" % e.message, ensure_ascii=False)
+                log.error(e, exc_info=True)
+                return utils.jsonify(code=-1, msg=u"操作失败，%s" % e, ensure_ascii=False)
         return decorator
 
 

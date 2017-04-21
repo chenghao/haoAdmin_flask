@@ -175,8 +175,8 @@ def templated(template=None):
                     return render_template(template_name, result=ctx)
             except BaseException as e:
                 log = singletons.Log()
-                log.error(e.message, exc_info=True)
-                return jsonify(code=-1, msg=u"操作失败，%s" % e.message, ensure_ascii=False)
+                log.error(e, exc_info=True)
+                return jsonify(code=-1, msg=u"操作失败，%s" % e, ensure_ascii=False)
 
         return decorated_function
 

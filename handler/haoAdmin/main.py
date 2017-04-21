@@ -7,6 +7,6 @@ main = Blueprint('main', __name__)
 
 
 @main.route("/")
-@templated("haoAdmin/main")
+@templated("haoAdmin/main/index")
 def index():
     return {}
