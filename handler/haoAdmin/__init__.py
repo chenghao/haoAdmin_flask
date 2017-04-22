@@ -6,9 +6,10 @@ from utils import templated, cached, jsonify
 from dal import haoAdmin
 from utils.route import FlaskBlueprint as Blueprint
 
-__author__ = "chenghao"
-
 admin = Blueprint('admin', __name__)
+from handler.haoAdmin import auth, home, menu, type, user
+
+__author__ = "chenghao"
 
 
 @admin.route("/")

@@ -8,15 +8,14 @@ from dal.haoAdmin import role as role_dal
 from models import HUser
 from utils.singletons import Cache
 from utils import jsonify
-from utils.route import FlaskBlueprint as Blueprint
+from handler.haoAdmin import admin
 
 __author__ = "chenghao"
 
 log = utils.singletons.Log()
-auth = Blueprint('auth', __name__)
 
 
-@auth.route("/login", methods=['GET', 'POST'])
+@admin.route("/auth/login", methods=['GET', 'POST'])
 def login():
     if request.method == "GET":
         return render_template('haoAdmin/auth/login.html')
@@ -47,7 +46,7 @@ def login():
             return jsonify(code=-1, msg="用户名或密码错误", ensure_ascii=False)
 
 
-@auth.route('/logout', methods=['POST'])
+@admin.route('/auth/logout', methods=['POST'])
 def logout():
     try:
         user_id = current_user.get_id()

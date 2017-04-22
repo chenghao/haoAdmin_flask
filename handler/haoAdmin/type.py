@@ -4,18 +4,16 @@ from flask import request
 import utils
 from dal.haoAdmin import type as dal_type
 from utils import templated, jsonify
-from utils.route import FlaskBlueprint as Blueprint
-
-type = Blueprint('type', __name__)
+from handler.haoAdmin import admin
 
 
-@type.route("/index")
+@admin.route("/type/index")
 @templated("haoAdmin/type/index")
-def index():
+def type():
     return {}
 
 
-@type.route("/get_typegroup")
+@admin.route("/type/get_typegroup")
 def get_typegroup():
     """
     获取字典分类
@@ -32,7 +30,7 @@ def get_typegroup():
     return jsonify(groups=groups, page_no=page_no, total_page=utils.total_page(groups_count))
 
 
-@type.route("/get_type")
+@admin.route("/type/get_type")
 def get_type():
     """
     根据分类id查询数据

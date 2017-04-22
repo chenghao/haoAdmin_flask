@@ -2,22 +2,20 @@
 from flask import request, session
 from flask.ext.login import current_user
 from utils import templated, jsonify
-from utils.route import FlaskBlueprint as Blueprint
 import utils
 from dal.haoAdmin import user as dal_user
+from handler.haoAdmin import admin
 
 __author__ = "chenghao"
 
-user = Blueprint('user', __name__)
 
-
-@user.route("/index")
+@admin.route("/user/index")
 @templated("haoAdmin/user/index")
-def index():
+def user():
     return {}
 
 
-@user.route("/get_users")
+@admin.route("/user/get_users")
 def get_users():
     """
     获取用户列表

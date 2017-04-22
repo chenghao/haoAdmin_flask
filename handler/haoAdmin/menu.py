@@ -3,20 +3,18 @@ from flask import request, session
 from flask.ext.login import current_user
 from dal.haoAdmin import menu as dal_menu
 from utils import templated, jsonify
-from utils.route import FlaskBlueprint as Blueprint
+from handler.haoAdmin import admin
 
 __author__ = "chenghao"
 
-menu = Blueprint('menu', __name__)
 
-
-@menu.route("/index")
+@admin.route("/menu/index")
 @templated("haoAdmin/menu/index")
-def index():
+def menu():
     return {}
 
 
-@menu.route("/get_parent_menu")
+@admin.route("/menu/get_parent_menu")
 def get_parent_menu():
     user_id = current_user.get_id()  # 当前用户ID
     menu_id = request.args.get("menu_id", "")  # 菜单ID

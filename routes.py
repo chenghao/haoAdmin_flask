@@ -4,7 +4,7 @@ from flask import Flask, request, redirect
 from flask.ext.login import LoginManager, current_user
 from flask_session import Session
 from models import HUser
-from handler.haoAdmin import admin, auth, user, main, menu, type
+from handler.haoAdmin import admin
 from datetime import timedelta
 from peewee import DoesNotExist
 import utils, conf
@@ -57,8 +57,3 @@ def first_request():
 
 
 app.register_blueprint(admin, url_prefix=URL_PREFIX)
-app.register_blueprint(auth.auth, url_prefix=URL_PREFIX + '/auth')
-app.register_blueprint(user.user, url_prefix=URL_PREFIX + '/user')
-app.register_blueprint(main.main, url_prefix=URL_PREFIX + '/main')
-app.register_blueprint(menu.menu, url_prefix=URL_PREFIX + '/menu')
-app.register_blueprint(type.type, url_prefix=URL_PREFIX + '/type')
