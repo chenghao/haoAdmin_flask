@@ -30,10 +30,10 @@ class HMenu(BaseModel):
     """
     菜单表
     """
-    icon = CharField(null=True)  # 图标
+    icon = CharField(null=True, max_length=50)  # 图标
     level = IntegerField()  # 等级
-    menu_name = CharField()  # 菜单名称
-    menu_url = CharField(null=True)  # 菜单URL地址
+    menu_name = CharField(max_length=20)  # 菜单名称
+    menu_url = CharField(null=True, max_length=100)  # 菜单URL地址
     parent_menu = ForeignKeyField('self', null=True, related_name='children', db_column="parent_menu")  # 上级菜单
     sort = IntegerField()  # 菜单排序
     org_ids = TextField(null=True)  # 菜单所属机构
@@ -47,7 +47,7 @@ class HOrg(BaseModel):
     """
     机构表
     """
-    name = CharField()  # 机构名称
+    name = CharField(max_length=50)  # 机构名称
     description = CharField(null=True)  # 机构描述
     parent_org = ForeignKeyField('self', null=True, related_name='children', db_column="parent_org")  # 上级机构
 
@@ -59,8 +59,8 @@ class HRole(BaseModel):
     """
     角色表
     """
-    role_name = CharField()  # 角色名称
-    role_code = CharField()  # 角色代码
+    role_name = CharField(max_length=20)  # 角色名称
+    role_code = CharField(max_length=20)  # 角色代码
 
     class Meta:
         db_table = 'h_role'
@@ -70,10 +70,10 @@ class HUser(BaseModel, UserMixin):
     """
     用户表
     """
-    login_name = CharField(unique=True)  # 登录名称
-    login_pwd = CharField()  # 登录密码
-    user_name = CharField()  # 用户名称
-    phone = CharField(null=True)  # 用户手机号
+    login_name = CharField(unique=True, max_length=20)  # 登录名称
+    login_pwd = CharField(max_length=64)  # 登录密码
+    user_name = CharField(max_length=20)  # 用户名称
+    phone = CharField(null=True, max_length=11)  # 用户手机号
     sex = IntegerField(null=True)  # 用户性别
     org_ids = TextField(null=True)  # 用户所属机构
     role_ids = TextField(null=True)  # 用户所属角色
@@ -88,8 +88,8 @@ class HUser(BaseModel, UserMixin):
 class HType(BaseModel):
     create_time = DateTimeField(null=True)
     group = IntegerField(db_column='group_id')
-    type_name = CharField()
-    type_value = CharField()
+    type_name = CharField(max_length=20)
+    type_value = CharField(max_length=20)
 
     class Meta:
         db_table = 'h_type'
@@ -97,8 +97,14 @@ class HType(BaseModel):
 
 class HTypegroup(BaseModel):
     create_time = DateTimeField(null=True)
-    group_name = CharField()
-    group_value = CharField(unique=True)
+    group_name = CharField(max_length=20)
+    group_value = CharField(unique=True, max_length=20)
 
     class Meta:
         db_table = 'h_typegroup'
+
+
+if __name__ == "__main__":
+    myModels = [HMenu, HOrg, HRole, HUser, HType, HTypegroup]
+    [myModel.drop_table() for myModel in myModels if myModel.table_exists()]
+    [myModel.create_table() for myModel in myModels]
