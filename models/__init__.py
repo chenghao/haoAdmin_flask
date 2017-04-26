@@ -86,7 +86,6 @@ class HUser(BaseModel, UserMixin):
 
 
 class HType(BaseModel):
-    create_time = DateTimeField(null=True)
     group = IntegerField(db_column='group_id')
     type_name = CharField(max_length=20)
     type_value = CharField(max_length=20)
@@ -96,7 +95,6 @@ class HType(BaseModel):
 
 
 class HTypegroup(BaseModel):
-    create_time = DateTimeField(null=True)
     group_name = CharField(max_length=20)
     group_value = CharField(unique=True, max_length=20)
 

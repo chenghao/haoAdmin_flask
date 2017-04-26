@@ -1,5 +1,5 @@
 # coding:utf-8
-from flask import render_template, request, session
+from flask import render_template, request, session, redirect
 from flask.ext.login import login_user, logout_user, current_user
 from peewee import DoesNotExist
 import conf, utils
@@ -18,7 +18,11 @@ log = utils.singletons.Log()
 @admin.route("/auth/login", methods=['GET', 'POST'])
 def login():
     if request.method == "GET":
-        return render_template('haoAdmin/auth/login.html')
+        user_id = current_user.get_id()
+        if user_id:
+            return redirect(conf.URL_PREFIX)
+        else:
+            return render_template('haoAdmin/auth/login.html')
     else:
         login_name = request.form.get("login_name")
         login_pwd = request.form.get("login_pwd", "")
