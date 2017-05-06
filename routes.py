@@ -10,6 +10,7 @@ from peewee import DoesNotExist
 import utils, conf
 from conf import URL_PREFIX
 from redis import Redis
+from utils import jsonify
 
 __author__ = "chenghao"
 app = Flask(__name__, static_url_path=URL_PREFIX + '/static')
@@ -54,6 +55,17 @@ def first_request():
             if "/static" not in path_str:
                 return redirect(URL_PREFIX + "/auth/login")
     return None
+
+
+@app.errorhandler(422)
+def handle_validation_error(err):
+    exc = err.data['exc']
+    return jsonify(errors=exc.messages), 422
+
+
+@app.errorhandler(404)
+def handle_404(err):
+    return jsonify(errors=str(err)), 404
 
 
 app.register_blueprint(admin, url_prefix=URL_PREFIX)

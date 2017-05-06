@@ -4,8 +4,8 @@
 // 后台连接前缀，（包括api接口和static）
 var remoteUrl = "";
 
-success_layer_option = {icon: 1, time: 2000};
-error_layer_option = {icon: 5, time: 2000};
+var success_layer_option = {icon: 1, time: 2000};
+var error_layer_option = {icon: 5, time: 2000};
 
 function getPrefixPath(url) {
     return remoteUrl + url;
@@ -66,5 +66,20 @@ function buildPage(laypage, page_no, total_page, callback){
                 }
             }
         }
+    });
+}
+
+function openwin(title, url, width, height) {
+    var _width = !width ? "800px" : width + "px";
+    var _height = !height ? "550px" : height + "px";
+
+    layer.open({
+        type: 2,
+        title: title,
+        shadeClose: false,
+        shade: 0.8,
+        maxmin: false, //开启最大化最小化按钮
+        area: [_width, _height],
+        content: getPrefixPath(url)
     });
 }

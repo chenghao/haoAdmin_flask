@@ -114,57 +114,56 @@
 
 	<script>
         var _keyword = "";
-        layui.use(['jquery', 'laytpl', 'laypage'], function() {
-            var $ = layui.jquery,
-                laypage = layui.laypage,
-                laytpl = layui.laytpl;
+        var laypage, laytpl;
+        layui.use(['laytpl', 'laypage'], function() {
+            laypage = layui.laypage,
+            laytpl = layui.laytpl;
 
             $(function(){
                 init_data(1);
             });
-
-            function init_data(page, keyword){
-                ajaxReq("user/get_users", function(data){
-                    var tpl = document.getElementById('user_tpl').innerHTML; //读取模版
-                    laytpl(tpl).render(data, function(render){
-                      document.getElementById('tbodys').innerHTML = render;
-                    });
-
-                    _search();
-
-                    //getUserOrg();
-                    //getUserRole();
-
-                    buildPage(laypage, data.page_no, data.total_page, function (page_no) {
-                        init_data(page_no, keyword);
-                    });
-                }, {page_no: page, keyword: keyword});
-            }
-
-            function getUserOrg() {
-                $(".getUserOrg").click(function () {
-                    var user_id = $(this).attr("v");
-                    var menuName = $(this).parent("td").siblings("td").eq(0).html();
-                    $("#parentMenuName").html("［" + menuName + "］");
-
-                    ajaxReq("menu/get_parent_menu", function(data){
-                        var tpl = document.getElementById('menu_tpl2').innerHTML; //读取模版
-                        //方式一：异步渲染（推荐）
-                        laytpl(tpl).render(data, function(render){
-                          document.getElementById('tbodys2').innerHTML = render;
-                        });
-                    }, {menu_id: menu_id, is_children: "1"});
-                })
-            }
-
-            function _search(){
-                $("#search").click(function () {
-                    var keyword = $("#keyword").val();
-                    _keyword = keyword;
-                    init_data(1, keyword);
-                });
-            }
         });
 
+        function init_data(page, keyword){
+            ajaxReq("user/get_users", function(data){
+                var tpl = document.getElementById('user_tpl').innerHTML; //读取模版
+                laytpl(tpl).render(data, function(render){
+                  document.getElementById('tbodys').innerHTML = render;
+                });
+
+                _search();
+
+                //getUserOrg();
+                //getUserRole();
+
+                buildPage(laypage, data.page_no, data.total_page, function (page_no) {
+                    init_data(page_no, keyword);
+                });
+            }, {page_no: page, keyword: keyword});
+        }
+
+        function getUserOrg() {
+            $(".getUserOrg").click(function () {
+                var user_id = $(this).attr("v");
+                var menuName = $(this).parent("td").siblings("td").eq(0).html();
+                $("#parentMenuName").html("［" + menuName + "］");
+
+                ajaxReq("menu/get_parent_menu", function(data){
+                    var tpl = document.getElementById('menu_tpl2').innerHTML; //读取模版
+                    //方式一：异步渲染（推荐）
+                    laytpl(tpl).render(data, function(render){
+                      document.getElementById('tbodys2').innerHTML = render;
+                    });
+                }, {menu_id: menu_id, is_children: "1"});
+            })
+        }
+
+        function _search(){
+            $("#search").click(function () {
+                var keyword = $("#keyword").val();
+                _keyword = keyword;
+                init_data(1, keyword);
+            });
+        }
 	</script>
 </body>

@@ -10,7 +10,7 @@
 
 		<fieldset class="layui-elem-field" style="width: 45%; float: left">
 			<legend>主菜单列表</legend>
-            <a href="javascript:;" class="layui-btn layui-btn-small" id="add" style="margin-left: 15px;">
+            <a href="javascript:;" class="layui-btn layui-btn-small" id="addMainMenu" style="margin-left: 15px;">
 				<i class="layui-icon">&#xe608;</i> 添加菜单
 			</a>
 
@@ -104,41 +104,45 @@
 
 
 	<script>
-        layui.use(['jquery', 'laytpl'], function() {
-            var $ = layui.jquery,
-                laytpl = layui.laytpl;
+        var laytpl;
+
+        layui.use(['laytpl'], function() {
+            laytpl = layui.laytpl;
 
             $(function(){
                 init_data();
             });
-
-            function init_data(){
-                ajaxReq("menu/get_parent_menu", function(data){
-                    var tpl = document.getElementById('menu_tpl').innerHTML; //读取模版
-                    laytpl(tpl).render(data, function(render){
-                      document.getElementById('tbodys').innerHTML = render;
-                    });
-
-                    getSiblingMenu();
-                });
-            }
-
-            function getSiblingMenu() {
-                $(".getSiblingMenu").click(function () {
-                    var menu_id = $(this).attr("v");
-                    var menuName = $(this).parent("td").siblings("td").eq(0).html();
-                    $("#parentMenuName").html("［" + menuName + "］");
-
-                    ajaxReq("menu/get_parent_menu", function(data){
-                        var tpl = document.getElementById('menu_tpl2').innerHTML; //读取模版
-                        //方式一：异步渲染（推荐）
-                        laytpl(tpl).render(data, function(render){
-                          document.getElementById('tbodys2').innerHTML = render;
-                        });
-                    }, {menu_id: menu_id, is_children: "1"});
-                })
-            }
         });
 
+        function init_data(){
+            ajaxReq("menu/get_parent_menu", function(data){
+                var tpl = document.getElementById('menu_tpl').innerHTML; //读取模版
+                laytpl(tpl).render(data, function(render){
+                  document.getElementById('tbodys').innerHTML = render;
+                });
+
+                getSiblingMenu();
+            });
+        }
+
+        function getSiblingMenu() {
+            $(".getSiblingMenu").click(function () {
+                var menu_id = $(this).attr("v");
+                var menuName = $(this).parent("td").siblings("td").eq(0).html();
+                $("#parentMenuName").html("［" + menuName + "］");
+
+                ajaxReq("menu/get_parent_menu", function(data){
+                    var tpl = document.getElementById('menu_tpl2').innerHTML; //读取模版
+                    //方式一：异步渲染（推荐）
+                    laytpl(tpl).render(data, function(render){
+                      document.getElementById('tbodys2').innerHTML = render;
+                    });
+                }, {menu_id: menu_id, is_children: "1"});
+            })
+        }
+
+        $("#addMainMenu").click(function () {
+           openwin("添加主菜单", "");
+        });
 	</script>
 </body>

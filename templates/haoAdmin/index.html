@@ -36,7 +36,7 @@
 						<li class="layui-nav-item">
 							<a href="javascript:;" class="beg-layou-head">
 								<img src="{{url_for('static', filename='images/0.jpg')}}" />
-								<span>beginner</span>
+								{#<span>beginner</span>#}
 							</a>
 							<dl class="layui-nav-child">
 								<dd>
@@ -106,92 +106,89 @@
 		</div>
 
 		<script>
-
 			///////////////////////////// 右击菜单 //////////////////////////////////
             //这是js的枚举，哈哈。
 			var closedEnum = {
 				closeCurrent:'closeCurrent', //关闭当前
 				closeAll:'closeAll'          //关闭所有
 			};
-			layui.use(['jquery', 'laytpl'], function() {
-				var $ = layui.jquery;
 
-				$(function () {
-                    $(".layui-tab-content iframe", parent.document.body).attr("src", remoteUrl + "home");
+            $(function () {
+                $(".layui-tab-content iframe", parent.document.body).attr("src", remoteUrl + "home");
+            });
+
+            //退出
+            $("#logout").click(function () {
+                _confirm("确定退出吗？", function(){
+                    ajaxReq("auth/logout", function(data){
+                        if(data.code == 0){
+                            customHref("auth/login");
+                        }else{
+                            layer.msg(d.msg, error_layer_option)
+                        }
+                    }, {}, "post");
                 });
+            });
 
-				//退出
-				$("#logout").click(function () {
-                    _confirm("确定退出吗？", function(){
-                        ajaxReq("auth/logout", function(data){
-                            if(data.code == 0){
-                                customHref("auth/login");
-                            }else{
-                                layer.msg(d.msg, error_layer_option)
+            //右击事件
+            var $contextMenu = $('#contextmenu');
+            $(document).on('mousedown', '.layout-nav-card > ul.layui-tab-title', function (e) {
+                //防止事件冒泡
+                e.preventDefault();
+                //鼠标右击
+                if(e.which === 3) {
+                    var $this = $(e.target);
+                    //元素定位
+                    $contextMenu.css({
+                        left: e.pageX-2,
+                        top: e.pageY-2
+                    }).show()
+                    .children('ul.layui-nav').children('li.layui-nav-item').each(function () {
+                        var $that = $(this);
+                        //绑定点击事件
+                        $that.on('click', function () {
+                            var toggle = $that.data('toggle');
+                            var localName = $this[0].localName;
+                            var $li;
+                            if (localName === 'ul') {
+                                $li = $this.children('li.layui-this');
+                            } else if (localName === 'i' || localName === 'cite') {
+                                $li = $this.parent('li');
+                            } else {
+                                $li = $this;
                             }
-                        }, {}, "post");
+                            switch (toggle) {
+                                //关闭当前标签
+                                case closedEnum.closeCurrent:
+                                    $li.children('i.layui-tab-close').click();
+                                    $($contextMenu).hide();
+                                    break;
+                                case closedEnum.closeAll:
+                                    var lis = $(".layui-tab-title li");
+                                    $.each(lis, function(i, t){
+                                        $(t).children('i.layui-tab-close').click();
+                                    });
+                                    $($contextMenu).hide();
+                                    break;
+                                default:
+                                    break;
+                            }
+                        });
                     });
-                });
 
-				//右击事件
-				var $contextMenu = $('#contextmenu');
-				$(document).on('mousedown', '.layout-nav-card > ul.layui-tab-title', function (e) {
-                    //防止事件冒泡
-				    e.preventDefault();
-					//鼠标右击
-					if(e.which === 3) {
-						var $this = $(e.target);
-					    //元素定位
-						$contextMenu.css({
-						    left: e.pageX-2,
-						    top: e.pageY-2
-						}).show()
-						.children('ul.layui-nav').children('li.layui-nav-item').each(function () {
-						    var $that = $(this);
-						    //绑定点击事件
-						    $that.on('click', function () {
-						        var toggle = $that.data('toggle');
-						        var localName = $this[0].localName;
-						        var $li;
-						        if (localName === 'ul') {
-						            $li = $this.children('li.layui-this');
-						        } else if (localName === 'i' || localName === 'cite') {
-						            $li = $this.parent('li');
-						        } else {
-						            $li = $this;
-						        }
-						        switch (toggle) {
-						            //关闭当前标签
-						            case closedEnum.closeCurrent:
-						                $li.children('i.layui-tab-close').click();
-										$($contextMenu).hide();
-						                break;
-						            case closedEnum.closeAll:
-										var lis = $(".layui-tab-title li");
-										$.each(lis, function(i, t){
-											$(t).children('i.layui-tab-close').click();
-										});
-						                $($contextMenu).hide();
-						                break;
-						            default:
-						                break;
-						        }
-						    });
-						});
+                    $contextMenu.on('mouseover', function (e) {
+                        $(this).show();
+                    }).on('mouseout', function () {
+                        $(this).hide();
+                    });
+                }
+            });
+            //禁用鼠标右键
+            $(document).bind("contextmenu ", function(e) {
+                e.returnValue=false;
+                return false;
+            });
 
-					    $contextMenu.on('mouseover', function (e) {
-						    $(this).show();
-						}).on('mouseout', function () {
-						    $(this).hide();
-						});
-					}
-				});
-				//禁用鼠标右键
-				$(document).bind("contextmenu ", function(e) {
-				    e.returnValue=false;
-					return false;
-				});
-			});
 		</script>
 
 	</body>

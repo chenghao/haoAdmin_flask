@@ -28,10 +28,6 @@ layui.config({
 			//这里的数据源只是演示时用的，实际需求可能通过远程读取（根据模块ID来获取对应模块的信息）
 			url = remoteUrl + "get_main_menu?menu_id=" + id;
 
-			//var menus = store.get("menus");
-			//var data = menus.level2["menu_" + id];
-
-			//var url = remoteUrl + "menu/get_child_menu?parent_id=" + id + "&t=" + (new Date()).valueOf();
 			//设置数据源有两个方式。
 			//第一：在此页面通过ajax读取设置  举个栗子：
 			//---------这是第一个栗子----------
