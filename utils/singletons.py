@@ -32,6 +32,12 @@ class SingletonLog(type):
             # 设置记录器名字
             log = logging.getLogger('haoAdmin')
             log.addHandler(log_handler)
+            
+            # 再创建一个handler，用于输出到控制台
+            console = logging.StreamHandler()
+            console.setFormatter(log_formatter)
+            log.addHandler(console)
+            
             # 设置日志等级
             log.setLevel(conf.log_level)
             cls._instances = log
